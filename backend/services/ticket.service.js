@@ -1,95 +1,108 @@
 const AppError = require("../errors/app-error");
+const prisma = require("../config/prisma");
 
-const tickets = [
-  {
-    id: 1,
-    title: "Payment issue",
-    description: "My payment was deducted twice",
-    customerName: "Nizaqat",
-    status: "OPEN",
-    priority: "HIGH",
-  },
-  {
-    id: 2,
-    title: "Login issue",
-    description: "I cannot log into my account",
-    customerName: "Ahmed",
-    status: "IN_PROGRESS",
-    priority: "MEDIUM",
-  },
-];
 
-function getAllTickets() {
-  return tickets;
+async function getAllTickets(filters) {
+  const ticketsFromDatabase = await prisma.ticket.findMany({
+    where: {
+      ...(filters.status !== undefined && {
+        status: filters.status,
+      }),
+
+      status: filters.status !== undefined ? filters.status : undefined,
+
+      ...(filters.priority !== undefined && {
+        priority: filters.priority,
+      }),
+    },
+  });
+
+  return ticketsFromDatabase;
+}
+
+async function createTicket(ticketData){
+  const newTicket = await prisma.ticket.create({
+    data: {
+      title: ticketData.title,
+      description: ticketData.description,
+      customerName: ticketData.customerName,
+      status: ticketData.status ?? "OPEN",
+      priority: ticketData.priority ?? "MEDIUM",
+    },
+  });
+
+  return newTicket;
 }
 
 
-function getTicketByID(ticketId){
-    console.log("user is askding for id: ",ticketId)
-    const ticket = tickets.find((ticket) => ticket.id === ticketId )
-    
-    if (!ticket){
-      throw new AppError("id ghalat daali hai...",404)
+async function deleteTicket(ticketID) {
+  const existingTicket = await prisma.ticket.findUnique({
+    where: {
+      id: ticketID,
+    },
+  });
+
+  if (!existingTicket) {
+    throw new AppError(
+      "You have entered an invalid ID. Please enter a valid ticket ID.",
+      404
+    );
+  }
+
+  const deletedTicket = await prisma.ticket.delete({
+    where: {
+      id: ticketID,
+    },
+  });
+
+  return deletedTicket;
+}
+
+
+async function editTicket(ticketId, editTicketData){
+  const existingTicket = await prisma.ticket.findUnique({
+    where: {
+      id: ticketId,
+    },
+  });
+
+  if (!existingTicket) {
+    throw new AppError(
+      "You have entered an invalid ID. Please enter a valid ticket ID.",
+      404
+    );
+  }
+
+  const updatedTicket = await prisma.ticket.update({
+    where: {
+      id: ticketId
+    },
+    data: {
+      ...(editTicketData.title != undefined && { title: editTicketData.title }),
+         ...(editTicketData.description !== undefined && {
+        description: editTicketData.description,
+      }),
+
+      ...(editTicketData.customerName !== undefined && {
+        customerName: editTicketData.customerName,
+      }),
+
+      ...(editTicketData.status !== undefined && {
+        status: editTicketData.status,
+      }),
+
+      ...(editTicketData.priority !== undefined && {
+        priority: editTicketData.priority,
+      }),
+
     }
-
-    return ticket;
-}
-
-
-function createTicket(ticket){
-  tickets.push(ticket);
-  return ticket;
-}
-
-
-function deleteTicket(ticketId){
-  console.log('ticketid is: ',ticketId);
-
-  const ticketIndex = tickets.findIndex((ticket) => ticket.id === ticketId)
-
-  if (ticketIndex === -1){
-      console.log("ticket index is: ",ticketIndex);
-      throw new AppError("ap jo ticket delete krna cha rae hai wo exist nai krta........",404);
-  }else{
-      const [deletedTIcket] = tickets.splice(ticketIndex,1 );
-
-      console.log("deleted ticket is: ",deletedTIcket);
-
-      return {message: "Ticket deleted successfully",
-              deletedTIcket: deletedTIcket
-            };
-  }
-
-}
-
-
-function editTicket(ticketID, editTicketData){
-  const ticketIndex = tickets.findIndex((ticket) => ticket.id === ticketID)
-
-  if (ticketIndex === -1){
-    throw new AppError("You have entered a invalid id, please enter a valid ticket id..",404);
-  }
-  console.log("edit ticket data is: ",editTicketData);
-
-  let ticket = tickets[ticketIndex];
-
-  console.log("ticket to change original have: ",ticket);
-
-  for (const [key, value] of Object.entries(ticket)) {
-    if (key in editTicketData){
-      ticket[key] = editTicketData[key];
-    }
-  }
-
-  console.log("all tickets after edititng is: ",tickets);
-
-  return ticket;
+  })
+  return updatedTicket;
 }
 
 
 module.exports = {
-  AllTickets: getAllTickets,
-  TicketById: getTicketByID,
+  getAllTickets: getAllTickets,
   createTicket:createTicket,
   deleteTicket:deleteTicket,
   editTicket:editTicket

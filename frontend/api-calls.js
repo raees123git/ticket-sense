@@ -1,11 +1,11 @@
 async function getAllTickets(){
-    response = await fetch("http://localhost:3000/tickets");
+    response = await fetch("http://localhost:3000/tickets?status=OPEN&priority=HIGH&priority=Low");
 
     data = await response.json();
     console.log(data)
 }
 
-// getAllTickets();
+getAllTickets();
 
 async function getTicketByID(ticketID){
     response = await fetch(`http://localhost:3000/tickets/${ticketID}`);
@@ -15,20 +15,19 @@ async function getTicketByID(ticketID){
     console.log(data);
 }
 
-// getTicketByID(3);
+// getTicketByID(2);
 
 async function createTicket(){
     const ticket = {
-        id: "",
-        title: "button issue",
-        description: "I cannot click the button.",
-        customerName: "Arham",
-        status: "OPEN",
-        priority: "LOW",
+        title: "Password Problem",
+        description: "I forgot my passowrd",
+        customerName: "aree",
+        priority: "high",
+        status:"CLOSE"
     }
 
     try{
-        response = await fetch(`http://localhost:3000/tickets/createTicket/${ticket.id}`, {
+        response = await fetch("http://localhost:3000/tickets/createTicket", {
             method: "POST",
             headers: {
                 'Content-Type': 'application/json'
@@ -60,21 +59,21 @@ async function deleteTicket(ticketID){
             throw new Error(data.message);
         }
 
-        console.log("deleted ticket is: ",data);
+        console.log("deleted ticket is: ",data ,"\nand server code is: ",response.status);
 
     }catch (error){
         console.error("error is: ",error.message);
     }
 }
 
-// deleteTicket(2)
+// deleteTicket(3)
 
 
 async function editTicket(){
     ticket = {
-        id:5,
+        id:2,
         title: "button issue",
-        description: "",
+        description: "buton cannot be clicked by me",
     }
 
     try{
@@ -94,8 +93,6 @@ async function editTicket(){
 
     console.log("ticket after editting is: ",data)
 
-    
-
     } catch (error) {
         console.error("error is: ",error.message);
     }
@@ -103,4 +100,4 @@ async function editTicket(){
     console.log("🚀 The app didn't crash! Moving on to the next task...");
 } 
 
-editTicket();
+// editTicket();
