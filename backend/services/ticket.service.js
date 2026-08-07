@@ -9,8 +9,6 @@ async function getAllTickets(filters) {
         status: filters.status,
       }),
 
-      status: filters.status !== undefined ? filters.status : undefined,
-
       ...(filters.priority !== undefined && {
         priority: filters.priority,
       }),

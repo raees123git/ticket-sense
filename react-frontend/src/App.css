@@ -1,0 +1,217 @@
+/* Main application container */
+.app {
+  width: 1200px;
+  margin: 0 auto;
+  padding: 32px 20px;
+  color: #1f2937;
+}
+
+/* Header */
+.app-header {
+  margin-bottom: 32px;
+  text-align: center;
+}
+
+.app-header h1 {
+  margin: 0 0 8px;
+  font-size: 36px;
+  color: #111827;
+}
+
+.app-header p {
+  margin: 0;
+  color: #6b7280;
+}
+
+/* Create-ticket form */
+.app > form {
+  padding: 24px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+}
+
+.app > form h2 {
+  margin: 0 0 20px;
+}
+
+.app > form label {
+  display: block;
+  margin: 14px 0 6px;
+  font-weight: 600;
+}
+
+.app > form input {
+  width: 100%;
+  padding: 10px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #111827;
+  background-color: white;
+}
+
+.app > form input:focus {
+  border-color: #2563eb;
+  outline: none;
+}
+
+/* Add-ticket button */
+.add-ticket-button {
+  margin-top: 18px;
+  padding: 10px 18px;
+  border: none;
+  border-radius: 6px;
+  background-color: #16a34a;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.add-ticket-button:hover {
+  background-color: #15803d;
+}
+
+/* Tickets section */
+.tickets-section {
+  margin-top: 40px;
+}
+
+/* Heading and filter */
+.tickets-toolbar {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 24px;
+}
+
+.tickets-toolbar h2 {
+  margin: 0;
+}
+
+.filter {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.filter label {
+  font-weight: 600;
+}
+
+.filter select {
+  padding: 8px 12px;
+  border: 1px solid #d1d5db;
+  border-radius: 6px;
+  color: #111827;
+  background-color: white;
+  cursor: pointer;
+}
+
+/* Three equal columns */
+.tickets-grid {
+  display: grid;
+  grid-template-columns: repeat(3, 1fr);
+  gap: 20px;
+}
+
+/* Individual ticket card */
+.ticket-card {
+  display: flex;
+  flex-direction: column;
+  min-height: 240px;
+  padding: 20px;
+  border: 1px solid #d1d5db;
+  border-radius: 8px;
+  background-color: white;
+  box-shadow: 0 2px 6px rgb(0 0 0 / 8%);
+}
+
+/* Card heading and status */
+.ticket-card-header {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  gap: 12px;
+}
+
+.ticket-card-header h3 {
+  margin: 0;
+  font-size: 18px;
+  color: #111827;
+}
+
+.status-badge {
+  padding: 4px 8px;
+  border-radius: 12px;
+  background-color: #dbeafe;
+  color: #1d4ed8;
+  font-size: 12px;
+  font-weight: 700;
+}
+
+/* Ticket content */
+.ticket-description {
+  margin: 16px 0;
+  color: #6b7280;
+  line-height: 1.5;
+}
+
+.ticket-information {
+  margin-bottom: 18px;
+}
+
+.ticket-information p {
+  margin: 6px 0;
+  color: #374151;
+}
+
+/* Edit and Delete buttons */
+.ticket-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.ticket-actions button {
+  padding: 8px 14px;
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-weight: 600;
+  cursor: pointer;
+}
+
+.edit-button {
+  background-color: #2563eb;
+}
+
+.edit-button:hover {
+  background-color: #1d4ed8;
+}
+
+.delete-button {
+  background-color: #dc2626;
+}
+
+.delete-button:hover {
+  background-color: #b91c1c;
+}
+
+/* Messages */
+.error-message {
+  padding: 12px;
+  border: 1px solid #fecaca;
+  border-radius: 6px;
+  background-color: #fef2f2;
+  color: #b91c1c;
+}
+
+.success-message {
+  margin-top: 14px;
+  padding: 12px;
+  border: 1px solid #bbf7d0;
+  border-radius: 6px;
+  background-color: #f0fdf4;
+  color: #15803d;
+}
