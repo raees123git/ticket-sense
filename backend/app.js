@@ -4,6 +4,7 @@ const errorHandler = require("./middlewares/error-handler");
 const AppError = require("./errors/app-error");
 
 const ticketRoutes = require("./routes/ticket.routes");
+const authRoutes = require("./routes/auth.routes");
 
 const app = express();
 
@@ -11,6 +12,8 @@ app.use(cors());
 app.use(express.json());
 
 app.use("/tickets", ticketRoutes);
+app.use("/auth", authRoutes);
+
 
 app.use((request, response, next) => {
   next(

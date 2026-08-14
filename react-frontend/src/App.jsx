@@ -15,10 +15,7 @@ function App() {
         setLoading(true);
         setError(null);
         const url = status === "ALL" ? "http://localhost:3000/tickets"  : `http://localhost:3000/tickets?status=${status}`;
-
         const response = await fetch(url);
-
-        console.log("response is: ",response);
 
         if (!response.ok){
           throw new Error(`Failed to fetch tickets: ${response.status}`);
@@ -44,9 +41,72 @@ function App() {
     }
   }
 
-  function removeFirstTicket(){
-    setTickets(tickets.slice(1));
+  async function handleDeleteTicket(id){
+      try{
+        setLoading(true);
+        const response = await fetch(`http://localhost:3000/tickets/deleteTicket/${id}`,{
+          method:"DELETE"
+        });
+        if (!response.ok){
+          throw new Error(`Failed to delete ticket: ${response.status}, kindly check your network connection.`);
+        }
+
+        const data = await response.json();
+        console.log("deleted ticket is: ",data);
+
+        setTickets((tickets) => tickets.filter((ticket) => ticket.id !== id))
+        
+      }catch (error){
+        setError(error.message)
+      }finally{
+        setLoading(false);
+      }
+    }
+
+  async function handleEditTicket(ticketId, editTicketData) {
+  try {
+    setLoading(true);
+    setError(null);
+
+    const response = await fetch(
+      `http://localhost:3000/tickets/editTicket/${ticketId}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(editTicketData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          `Failed to update ticket: ${response.status}`
+      );
+    }
+
+    setTickets((currentTickets) =>
+      currentTickets.map((ticket) => {
+        if (ticket.id === ticketId) {
+          return data;
+        }
+
+        return ticket;
+      })
+    );
+
+    return true;
+
+  } catch (error) {
+    setError(error.message);
+    return false;
+  } finally {
+    setLoading(false);
   }
+}
 
 
   return  (
@@ -91,11 +151,14 @@ function App() {
           {tickets.map((ticket) => (
             <TicketCard
               key={ticket.id}
+              id={ticket.id}
               title={ticket.title}
               description={ticket.description}
               customerName={ticket.customerName}
               status={ticket.status}
               priority={ticket.priority}
+              onDeleteTicket={handleDeleteTicket}
+              onEditTicket={handleEditTicket}
             />
           ))}
         </div>

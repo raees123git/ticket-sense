@@ -11,6 +11,24 @@ datasource db {
   provider = "postgresql"
 }
 
+enum UserRole {
+  CUSTOMER
+  AGENT
+  ADMIN
+}
+
+model User {
+  id           Int      @id @default(autoincrement())
+  name         String
+  email        String   @unique
+  passwordHash String
+  role         UserRole @default(CUSTOMER)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  tickets Ticket[]
+}
+
 model Ticket {
   id           Int      @id @default(autoincrement())
   title        String
@@ -20,4 +38,26 @@ model Ticket {
   priority     String   @default("MEDIUM")
   createdAt    DateTime @default(now())
   updatedAt    DateTime @updatedAt
+
+  userId Int?
+  user   User? @relation(fields: [userId], references: [id])
 }
+
+// Here, User? refers to the User model, and userId stores the ID of the user who owns this ticket. The relation tells Prisma to use Ticket.userId as a foreign key that points to the id field of the User table. The question marks mean that userId and the user relationship can temporarily be null.
+
+//User refers to the Prisma User model/table:
+//model User {
+//id Int @id @default(autoincrement())
+//}
+
+//And this:
+//fields: [userId]
+
+//tells Prisma to use Ticket.userId as the foreign key.
+
+//This:
+//references: [id]
+//means it points to User.id.
+
+//So the relationship is:
+//Ticket.userId → User.id

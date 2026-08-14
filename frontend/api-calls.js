@@ -1,11 +1,11 @@
 async function getAllTickets(){
-    response = await fetch("http://localhost:3000/tickets?status=OPEN&priority=HIGH&priority=Low");
+    response = await fetch("http://localhost:3000/tickets");
 
     data = await response.json();
     console.log(data)
 }
 
-getAllTickets();
+// getAllTickets();
 
 async function getTicketByID(ticketID){
     response = await fetch(`http://localhost:3000/tickets/${ticketID}`);
@@ -71,9 +71,8 @@ async function deleteTicket(ticketID){
 
 async function editTicket(){
     ticket = {
-        id:2,
-        title: "button issue",
-        description: "buton cannot be clicked by me",
+        id:27,
+        description: "i cannot scroll on my page",
     }
 
     try{
@@ -101,3 +100,40 @@ async function editTicket(){
 } 
 
 // editTicket();
+
+
+
+async function registerUser() {
+  const userData = {
+    name: "Ali",
+    email: "ali@example.com",
+    password: "hello123",
+  };
+
+  try {
+    const response = await fetch(
+      "http://localhost:3000/auth/register",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(userData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message || `Registration failed with status ${response.status}`
+      );
+    }
+
+    console.log("Registration response:", data);
+  } catch (error) {
+    console.error("Registration error:", error.message);
+  }
+}
+
+registerUser();
