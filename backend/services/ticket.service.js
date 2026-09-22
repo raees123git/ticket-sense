@@ -18,7 +18,7 @@ async function getAllTickets(filters) {
   return ticketsFromDatabase;
 }
 
-async function createTicket(ticketData){
+async function createTicket(ticketData, loggedInUserId) {
   const newTicket = await prisma.ticket.create({
     data: {
       title: ticketData.title,
@@ -26,6 +26,7 @@ async function createTicket(ticketData){
       customerName: ticketData.customerName,
       status: ticketData.status ?? "OPEN",
       priority: ticketData.priority ?? "MEDIUM",
+      userId: loggedInUserId,
     },
   });
 

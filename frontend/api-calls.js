@@ -1,113 +1,172 @@
-async function getAllTickets(){
-    response = await fetch("http://localhost:3000/tickets");
+async function getAllTickets() {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/tickets"
+    );
 
-    data = await response.json();
-    console.log(data)
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    console.log("All tickets:", data);
+  } catch (error) {
+    console.error(
+      "Get tickets error:",
+      error.message
+    );
+  }
 }
 
 // getAllTickets();
 
-async function getTicketByID(ticketID){
-    response = await fetch(`http://localhost:3000/tickets/${ticketID}`);
 
-    data = await response.json();
+async function getTicketByID(ticketID) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/tickets/${ticketID}`
+    );
 
-    console.log(data);
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    console.log("Ticket:", data);
+  } catch (error) {
+    console.error(
+      "Get ticket error:",
+      error.message
+    );
+  }
 }
 
 // getTicketByID(2);
 
-async function createTicket(){
-    const ticket = {
-        title: "Password Problem",
-        description: "I forgot my passowrd",
-        customerName: "aree",
-        priority: "high",
-        status:"CLOSE"
-    }
 
-    try{
-        response = await fetch("http://localhost:3000/tickets/createTicket", {
-            method: "POST",
-            headers: {
-                'Content-Type': 'application/json'
-            },
-            body: JSON.stringify(ticket)
-        });
+async function createTicket(token) {
+  const ticket = {
+    title: "Password Problem",
+    description: "I forgot my password",
+    customerName: "Ali",
+    priority: "HIGH",
+    status: "OPEN",
+  };
 
-        data = await response.json();
-        console.log("created ticket is ", data);
-    } catch (error){
-        console.error("following error have occured: ",error)
-    }   
-
-}
-
-// createTicket()
-
-async function deleteTicket(ticketID){
-    try{
-        const response = await fetch(`http://localhost:3000/tickets/deleteTicket/${ticketID}`,{
-            method: "DELETE"
-        });
-        
-        console.log("deleted ticket response is ", response);
-        
-        const data = await response.json();
-        
-        if(!response.ok){
-            throw new Error(data.message);
-        }
-
-        console.log("deleted ticket is: ",data ,"\nand server code is: ",response.status);
-
-    }catch (error){
-        console.error("error is: ",error.message);
-    }
-}
-
-// deleteTicket(3)
-
-
-async function editTicket(){
-    ticket = {
-        id:27,
-        description: "i cannot scroll on my page",
-    }
-
-    try{
-    response = await fetch(`http://localhost:3000/tickets/editTicket/${ticket.id}`,{
-        method:"PATCH",
+  try {
+    const response = await fetch(
+      "http://localhost:3000/tickets/createTicket",
+      {
+        method: "POST",
         headers: {
-            'Content-Type': 'application/json'
+          "Content-Type": "application/json",
+          Authorization: `Bearer ${token}`,
         },
-        body: JSON.stringify(ticket)
-    });
+        body: JSON.stringify(ticket),
+      }
+    );
 
-    data = await response.json();
+    const data = await response.json();
 
-    if(!response.ok){
-        throw new Error(`Failed to update ticket. Error message is ${data.message} and error code is ${data.statusCode}`)
+    if (!response.ok) {
+      throw new Error(data.message);
     }
 
-    console.log("ticket after editting is: ",data)
+    console.log("Created ticket:", data);
+  } catch (error) {
+    console.error(
+      "Create ticket error:",
+      error.message
+    );
+  }
+}
 
-    } catch (error) {
-        console.error("error is: ",error.message);
+// Do not call createTicket() directly.
+// It needs the JWT returned by loginUser().
+
+
+async function deleteTicket(ticketID) {
+  try {
+    const response = await fetch(
+      `http://localhost:3000/tickets/deleteTicket/${ticketID}`,
+      {
+        method: "DELETE",
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
     }
 
-    console.log("🚀 The app didn't crash! Moving on to the next task...");
-} 
+    console.log(
+      "Deleted ticket:",
+      data,
+      "\nServer status:",
+      response.status
+    );
+  } catch (error) {
+    console.error(
+      "Delete ticket error:",
+      error.message
+    );
+  }
+}
+
+// deleteTicket(3);
+
+
+async function editTicket() {
+  const ticket = {
+    id: 27,
+    description: "I cannot scroll on my page",
+  };
+
+  try {
+    const response = await fetch(
+      `http://localhost:3000/tickets/editTicket/${ticket.id}`,
+      {
+        method: "PATCH",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(ticket),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(
+        data.message ||
+          `Failed to update ticket with status ${response.status}`
+      );
+    }
+
+    console.log("Ticket after editing:", data);
+  } catch (error) {
+    console.error(
+      "Edit ticket error:",
+      error.message
+    );
+  }
+
+  console.log(
+    "The app did not crash. Moving to the next task."
+  );
+}
 
 // editTicket();
-
 
 
 async function registerUser() {
   const userData = {
     name: "Ali",
     email: "ali@example.com",
-    password: "hello123",
+    password: "12345678",
   };
 
   try {
@@ -126,14 +185,93 @@ async function registerUser() {
 
     if (!response.ok) {
       throw new Error(
-        data.message || `Registration failed with status ${response.status}`
+        data.message ||
+          `Registration failed with status ${response.status}`
       );
     }
 
     console.log("Registration response:", data);
   } catch (error) {
-    console.error("Registration error:", error.message);
+    console.error(
+      "Registration error:",
+      error.message
+    );
   }
 }
 
-registerUser();
+// registerUser();
+
+
+async function loginUser() {
+  const loginData = {
+    email: "ali@example.com",
+    password: "12345678",
+  };
+
+  try {
+    const response = await fetch(
+      "http://localhost:3000/auth/login",
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(loginData),
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    console.log("Login successful:", data.user);
+
+    // Test that the token can identify the current user.
+    await getCurrentUser(data.token);
+
+    // Create a ticket owned by the authenticated user.
+    await createTicket(data.token);
+  } catch (error) {
+    console.error(
+      "Login error:",
+      error.message
+    );
+  }
+}
+
+
+async function getCurrentUser(token) {
+  try {
+    const response = await fetch(
+      "http://localhost:3000/auth/me",
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+      }
+    );
+
+    const data = await response.json();
+
+    if (!response.ok) {
+      throw new Error(data.message);
+    }
+
+    console.log(
+      "Current authenticated user:",
+      data
+    );
+  } catch (error) {
+    console.error(
+      "Authentication check failed:",
+      error.message
+    );
+  }
+}
+
+
+// Start the authenticated test flow.
+loginUser();

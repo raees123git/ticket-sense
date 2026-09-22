@@ -1,6 +1,5 @@
   const ticketService = require("../services/ticket.service");
 
-
 async function getAllTickets(request, response, next) {
   try {
     const { status, priority } = request.query;
@@ -19,12 +18,18 @@ async function getAllTickets(request, response, next) {
 }
 
 
-async function createTicket(request, response, next){
-  try{
-      const newTicket = request.body;
-      const createdTicket = await ticketService.createTicket(newTicket);
-      return response.status(201).json(createdTicket);
-  }catch (error){
+async function createTicket(request, response, next) {
+  try {
+    const newTicket = request.body;
+    const loggedInUserId = request.user.id;
+
+    const createdTicket = await ticketService.createTicket(
+      newTicket,
+      loggedInUserId
+    );
+
+    return response.status(201).json(createdTicket);
+  } catch (error) {
     return next(error);
   }
 }
